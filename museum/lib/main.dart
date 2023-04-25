@@ -17,9 +17,16 @@ class MuseumApp extends StatelessWidget {
   }
 }
 
-class Artwork extends StatelessWidget {
+class Artwork extends StatefulWidget {
   const Artwork({super.key});
 
+  @override
+  State<Artwork> createState() => _ArtworkState();
+}
+
+class _ArtworkState extends State<Artwork> {
+  bool _isFavortie = false;
+  bool _showDescription = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,16 +35,94 @@ class Artwork extends StatelessWidget {
           backgroundColor: Colors.blue,
         ),
         body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('images/Mona_Lisa.jpg'),
-            const Text('Mona Lisa'),
-            const Text(
-              'Leonard DeVinci',
-              style: TextStyle(fontFamily: 'Merriweather', fontSize: 15),
-            )
-          ],
-        )));
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(alignment: Alignment.center, children: [
+                Image.asset('assets/images/Mona_Lisa.jpg'),
+                Icon(
+                  Icons.favorite,
+                  color: _isFavortie
+                      ? Colors.red
+                      : const Color.fromARGB(186, 255, 255, 255),
+                  size: 100,
+                ),
+                Container(
+                  width: 300,
+                  height: 350,
+                  decoration: BoxDecoration(
+                      color: _showDescription
+                          ? const Color.fromRGBO(255, 255, 255, 0.80)
+                          : Colors.transparent),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text(
+                        'La Joconde, ou Portrait de Mona Lisa, est un tableau de l\'artiste Léonard de Vinci, réalisé entre 1503 et 1506 ou entre 1513 et 15161,2, et peut-être jusqu\'à 1517 (l\'artiste étant mort le 2 mai 1519), qui représente un portrait mi-corps, probablement celui de la Florentine Lisa Gherardini, épouse de Francesco del Giocondo. Acquise par François Ier, cette peinture à l\'huile sur panneau de bois de peuplier de 77 × 53 cm est exposée au musée du Louvre à Paris. La Joconde est l\'un des rares tableaux attribués de façon certaine à Léonard de Vinci. La Joconde est devenue un tableau éminemment célèbre car, depuis sa réalisation, nombre d\'artistes l\'ont pris comme référence. À l\'époque romantique, les artistes ont été fascinés par ce tableau et ont contribué à développer le mythe qui l\'entoure, en faisant de ce tableau l’une des oeuvres d\'art les plus célèbres du monde, si ce n\'est la plus célèbre : elle est en tout cas considérée comme l\'une des représentations d\'un visage féminin les plus célèbres au monde. Au xxie siècle, elle est devenue l\'objet d\'art le plus visité au monde, devant le diamant Hope, avec 20 000 visiteurs qui viennent l\'admirer et la photographier quotidiennement.',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: _showDescription
+                              ? Colors.black
+                              : Colors.transparent,
+                        ),
+                      )),
+                )
+              ]),
+              const Text(
+                'Mona Lisa',
+                style: TextStyle(fontSize: 30, color: Colors.brown),
+              ),
+              const Text(
+                'Leonard DeVinci',
+                style: TextStyle(
+                    fontFamily: 'Merriweather',
+                    fontSize: 15,
+                    color: Colors.brown,
+                    fontWeight: FontWeight.bold),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.favorite),
+                    color: _isFavortie
+                        ? Colors.red
+                        : const Color.fromARGB(185, 224, 71, 33),
+                    iconSize: 40,
+                    onPressed: () {
+                      setState(() {
+                        _isFavortie = !_isFavortie;
+                      });
+                      final snackBar = SnackBar(
+                        content: const Text('Ajouté aux favoris !'),
+                        duration: const Duration(seconds: 2, milliseconds: 0),
+                        backgroundColor: (Colors.black12),
+                        action: SnackBarAction(
+                          label: 'dismiss',
+                          textColor: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              _isFavortie = !_isFavortie;
+                            });
+                          },
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.article),
+                    color: const Color.fromRGBO(54, 120, 244, 0.749),
+                    iconSize: 40,
+                    onPressed: () {
+                      setState(() {
+                        _showDescription = !_showDescription;
+                      });
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
+        ));
   }
 }
